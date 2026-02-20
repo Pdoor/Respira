@@ -12,39 +12,68 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
+/* ── DARK (default) ── */
 :root {
   --bg:      #080705;
+  --bg2:     #0f0e0b;
   --card:    rgba(255,248,235,0.035);
-  --border:  rgba(255,248,235,0.07);
+  --border:  rgba(255,248,235,0.08);
   --text:    #f0ebe2;
-  --muted:   rgba(240,235,226,0.38);
-  --muted2:  rgba(240,235,226,0.16);
+  --muted:   rgba(240,235,226,0.40);
+  --muted2:  rgba(240,235,226,0.18);
   --amber:   #c8a26a;
   --sage:    #7a9e7e;
   --rose:    #b07a8a;
   --stone:   #9a8a78;
-  --gold-ln: rgba(200,162,106,0.15);
+  --gold-ln: rgba(200,162,106,0.18);
+  --noise-op: 0.025;
   --fd: 'Cormorant Garamond', Georgia, serif;
   --fm: 'DM Mono', 'Courier New', monospace;
+  /* slider track */
+  --range-track: rgba(255,255,255,0.12);
+  /* bar track bg */
+  --bar-bg: rgba(255,255,255,0.03);
+  /* prog track */
+  --prog-bg: rgba(255,255,255,0.06);
+}
+
+/* ── LIGHT ── */
+:root.light {
+–bg:      #f5f0e8;
+–bg2:     #ede7da;
+–card:    rgba(60,40,10,0.04);
+–border:  rgba(60,40,10,0.10);
+–text:    #1e1a14;
+–muted:   rgba(30,26,20,0.45);
+–muted2:  rgba(30,26,20,0.25);
+–amber:   #9a6c32;
+–sage:    #4a7a50;
+–rose:    #884060;
+–stone:   #6a5a48;
+–gold-ln: rgba(154,108,50,0.20);
+–noise-op: 0.015;
+–range-track: rgba(0,0,0,0.10);
+–bar-bg: rgba(0,0,0,0.04);
+–prog-bg: rgba(0,0,0,0.08);
 }
 *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
 html,body {
-  height:100%; width:100%;
-  background:var(--bg); color:var(--text);
-  font-family:var(--fd);
-  overflow:hidden;
-  user-select:none; -webkit-user-select:none;
-  position:fixed;
+height:100%; width:100%;
+background:var(–bg); color:var(–text);
+font-family:var(–fd);
+overflow:hidden;
+user-select:none; -webkit-user-select:none;
+position:fixed;
 }
 body::before {
-  content:''; position:fixed; inset:0; z-index:200; pointer-events:none; opacity:.025;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size:180px;
+content:’’; position:fixed; inset:0; z-index:200; pointer-events:none; opacity:var(–noise-op);
+background-image:url(“data:image/svg+xml,%3Csvg viewBox=‘0 0 256 256’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cfilter id=‘n’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=‘0.85’ numOctaves=‘4’ stitchTiles=‘stitch’/%3E%3C/filter%3E%3Crect width=‘100%25’ height=‘100%25’ filter=‘url(%23n)’/%3E%3C/svg%3E”);
+background-size:180px;
 }
 .screen {
-  position:fixed; inset:0; display:flex; flex-direction:column;
-  transition:opacity .5s cubic-bezier(.4,0,.2,1), transform .5s cubic-bezier(.4,0,.2,1);
-  overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch;
+position:fixed; inset:0; display:flex; flex-direction:column;
+transition:opacity .5s cubic-bezier(.4,0,.2,1), transform .5s cubic-bezier(.4,0,.2,1);
+overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch;
 }
 .screen.hidden { opacity:0; pointer-events:none; transform:translateY(22px); }
 
@@ -56,9 +85,12 @@ display:flex; flex-direction:row; align-items:center; justify-content:space-betw
 padding:20px 24px 22px; flex-shrink:0; position:relative; gap:12px;
 }
 .app-header::after { content:’’; position:absolute; bottom:0; left:24px; right:24px; height:1px; background:var(–gold-ln); }
-.app-title-wrap { display:flex; flex-direction:column; gap:5px; }
-.app-title { font-size:clamp(34px,9vw,46px); font-weight:300; letter-spacing:.14em; line-height:1; }
+.app-title-wrap { display:flex; flex-direction:column; gap:3px; }
+/* 2.1 — titolo leggermente più grande */
+.app-title { font-size:clamp(40px,10.5vw,54px); font-weight:300; letter-spacing:.14em; line-height:1; }
 .app-sub { font-family:var(–fm); font-size:8.5px; letter-spacing:.32em; color:var(–muted); text-transform:uppercase; }
+/* 2.9 — by credit */
+.app-credit { font-family:var(–fm); font-size:7.5px; letter-spacing:.22em; color:var(–muted2); text-transform:lowercase; margin-top:2px; }
 .start-btn-header {
 flex-shrink:0; padding:16px 22px; border:none; border-radius:14px;
 font-family:var(–fd); font-size:17px; font-weight:400; letter-spacing:.1em;
@@ -86,17 +118,19 @@ padding:12px 15px; cursor:pointer; display:flex; align-items:center; gap:13px;
 transition:all .25s cubic-bezier(.4,0,.2,1);
 }
 .pattern-card:active { transform:scale(.985); }
-.pattern-card.active[data-id=“box”]  { border-color:rgba(200,162,106,.45); background:rgba(200,162,106,.07); }
-.pattern-card.active[data-id=“deep”] { border-color:rgba(122,158,126,.45); background:rgba(122,158,126,.07); }
-.pattern-card.active[data-id=“slow”] { border-color:rgba(176,122,138,.45); background:rgba(176,122,138,.07); }
+/* 2.8 — selezione molto più visibile */
+.pattern-card.active { border-color:rgba(200,162,106,.7) !important; background:rgba(200,162,106,.14) !important; box-shadow:0 0 0 1px rgba(200,162,106,.3), inset 0 0 20px rgba(200,162,106,.05); }
+.pattern-card.active[data-id=“deep”] { border-color:rgba(122,158,126,.7) !important; background:rgba(122,158,126,.14) !important; box-shadow:0 0 0 1px rgba(122,158,126,.3), inset 0 0 20px rgba(122,158,126,.05); }
+.pattern-card.active[data-id=“slow”] { border-color:rgba(176,122,138,.7) !important; background:rgba(176,122,138,.14) !important; box-shadow:0 0 0 1px rgba(176,122,138,.3), inset 0 0 20px rgba(176,122,138,.05); }
 .pm { width:3px; height:34px; border-radius:2px; flex-shrink:0; background:var(–stone); transition:background .3s; }
 .pattern-card.active[data-id=“box”]  .pm { background:var(–amber); box-shadow:0 0 10px rgba(200,162,106,.5); }
 .pattern-card.active[data-id=“deep”] .pm { background:var(–sage);  box-shadow:0 0 10px rgba(122,158,126,.5); }
 .pattern-card.active[data-id=“slow”] .pm { background:var(–rose);  box-shadow:0 0 10px rgba(176,122,138,.5); }
 .pi { flex:1; }
-.pn { font-size:15px; font-weight:400; color:var(–text); letter-spacing:.02em; }
-.pd { font-family:var(–fm); font-size:8.5px; color:var(–muted); margin-top:3px; }
-.ph-chip { font-family:var(–fm); font-size:9.5px; padding:3px 8px; border-radius:20px; background:rgba(255,255,255,.05); border:1px solid var(–border); color:var(–muted); flex-shrink:0; }
+/* 2.2 — descrizione leggermente più grande */
+.pn { font-size:16px; font-weight:400; color:var(–text); letter-spacing:.02em; }
+.pd { font-family:var(–fm); font-size:9.5px; color:var(–muted); margin-top:3px; }
+.ph-chip { font-family:var(–fm); font-size:9.5px; padding:3px 8px; border-radius:20px; background:var(–card); border:1px solid var(–border); color:var(–muted); flex-shrink:0; }
 
 .dur-row { display:flex; gap:7px; }
 .dur-pill {
@@ -116,7 +150,7 @@ transition:all .25s cubic-bezier(.4,0,.2,1);
 }
 .track-card:active { transform:scale(.985); }
 .track-card.active { border-color:rgba(200,162,106,.45); background:rgba(200,162,106,.07); }
-.tk-icon { width:42px; height:42px; border-radius:10px; flex-shrink:0; font-size:18px; background:rgba(255,255,255,.05); border:1px solid var(–border); display:flex; align-items:center; justify-content:center; transition:all .3s; }
+.tk-icon { width:42px; height:42px; border-radius:10px; flex-shrink:0; font-size:18px; background:var(–card); border:1px solid var(–border); display:flex; align-items:center; justify-content:center; transition:all .3s; }
 .track-card.active .tk-icon { background:rgba(200,162,106,.1); border-color:rgba(200,162,106,.3); }
 .tk-info { flex:1; min-width:0; }
 .tk-name { font-size:15px; font-weight:400; color:var(–text); }
@@ -126,14 +160,28 @@ transition:all .25s cubic-bezier(.4,0,.2,1);
 
 .vol-wrap { display:flex; align-items:center; gap:12px; }
 .vi { font-size:13px; color:var(–muted); }
-input[type=range] { flex:1; -webkit-appearance:none; appearance:none; height:2px; background:rgba(255,255,255,.1); border-radius:2px; outline:none; }
+input[type=range] { flex:1; -webkit-appearance:none; appearance:none; height:2px; background:var(–range-track); border-radius:2px; outline:none; }
 input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:18px; height:18px; border-radius:50%; background:var(–amber); cursor:pointer; box-shadow:0 0 10px rgba(200,162,106,.45); }
 
+/* ── PREVIEW BARS — primo piano setup ── */
 .preview-box { display:flex; gap:8px; align-items:flex-end; padding:13px; border:1px solid var(–border); border-radius:14px; background:var(–card); height:80px; overflow:hidden; }
 .prev-col { flex:1; display:flex; flex-direction:column; align-items:center; height:100%; gap:5px; }
-.prev-track { flex:1; width:100%; border-radius:3px; background:rgba(255,255,255,.03); border:1px solid var(–border); position:relative; overflow:hidden; }
+.prev-track { flex:1; width:100%; border-radius:3px; background:var(–bar-bg); border:1px solid var(–border); position:relative; overflow:hidden; }
 .prev-fill { position:absolute; bottom:0; left:0; right:0; height:0%; border-radius:2px; transition:height .85s cubic-bezier(.4,0,.2,1); }
+
+/* 2.7 — inspira: riempimento dall’alto; trattieni/pausa: sinistra→destra */
+.prev-fill.fill-top { top:0; bottom:auto; border-radius:2px; transition:height .85s cubic-bezier(.4,0,.2,1); }
+.prev-fill.fill-ltr { bottom:0; left:0; top:0; right:auto; height:100% !important; width:0%; border-radius:2px; transition:width .85s cubic-bezier(.4,0,.2,1); }
+
+/* 2.3 — numeri count più grandi e uniformi */
+.prev-num { font-family:var(–fm); font-size:13px; font-weight:400; color:var(–muted); letter-spacing:.04em; flex-shrink:0; line-height:1; }
+.prev-num.active-num { color:var(–text); }
 .prev-name { font-family:var(–fm); font-size:7px; letter-spacing:.12em; color:var(–muted); text-transform:uppercase; flex-shrink:0; white-space:nowrap; }
+
+/* 2.4 — sec label ben posizionata a destra del numero */
+.prev-count-row { display:flex; align-items:baseline; gap:2px; flex-shrink:0; }
+.prev-sec-lbl { font-family:var(–fm); font-size:6px; letter-spacing:.1em; color:var(–muted2); text-transform:uppercase; }
+
 .attr { font-family:var(–fm); font-size:8.5px; color:var(–muted2); letter-spacing:.1em; text-align:center; padding:9px 0 0; }
 
 .start-btn {
@@ -160,7 +208,7 @@ overflow:hidden;
 .orb2 { width:300px; height:300px; bottom:-90px; left:-110px; opacity:.07; }
 
 .sess-hdr { display:flex; justify-content:space-between; align-items:flex-start; width:100%; z-index:1; flex-shrink:0; margin-bottom:10px; }
-.close-btn { width:40px; height:40px; border-radius:50%; border:1px solid var(–border); background:rgba(255,248,235,.04); color:var(–muted); font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px); -webkit-appearance:none; }
+.close-btn { width:40px; height:40px; border-radius:50%; border:1px solid var(–border); background:var(–card); color:var(–muted); font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px); -webkit-appearance:none; }
 .sess-meta { text-align:right; }
 .spl { font-size:13px; font-weight:300; color:var(–text); letter-spacing:.04em; }
 .shl { font-family:var(–fm); font-size:9px; color:var(–muted); letter-spacing:.12em; margin-top:3px; }
@@ -168,23 +216,66 @@ overflow:hidden;
 .ticker { font-family:var(–fm); font-size:9px; color:var(–muted); z-index:1; flex-shrink:0; display:flex; align-items:center; gap:8px; width:100%; margin-bottom:6px; }
 .tdot { width:6px; height:6px; border-radius:50%; flex-shrink:0; background:var(–amber); animation:pdot 2.5s infinite; }
 .ttxt { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+@keyframes pdot { 0%,100%{opacity:1;} 50%{opacity:.3;} }
 
-/* ★ GRANDE COUNTDOWN ★ */
+/* ── SESSIONE: COUNTUP + fase ── */
 .phase-info { z-index:1; flex-shrink:0; text-align:center; width:100%; margin-bottom:8px; }
 .phase-lbl { font-family:var(–fm); font-size:clamp(14px,4vw,19px); letter-spacing:.44em; text-transform:uppercase; color:var(–muted); transition:color .6s ease; }
+.countdown-row { display:flex; align-items:flex-end; justify-content:center; gap:8px; margin-top:4px; }
 .countdown {
-font-size:clamp(140px,38vw,210px);
-font-weight:300; line-height:.9; letter-spacing:-.06em;
-transition:color .6s ease; margin-top:2px;
+font-family:var(–fm);
+font-size:clamp(110px,30vw,180px);
+font-weight:400; line-height:1; letter-spacing:0;
+font-variant-numeric:tabular-nums lining-nums;
+-webkit-font-feature-settings:“tnum” 1,“lnum” 1;
+font-feature-settings:“tnum” 1,“lnum” 1;
+transition:color .6s ease;
+display:inline-block;
 }
-.cunit { font-family:var(–fm); font-size:11px; letter-spacing:.35em; color:var(–muted); margin-top:4px; }
+.cunit { font-family:var(–fm); font-size:11px; letter-spacing:.35em; color:var(–muted); padding-bottom:12px; white-space:nowrap; }
+
+/* 1.2 — nome tecnica + descrizione in sessione */
+.sess-pattern-desc {
+z-index:1; flex-shrink:0; width:100%; margin-bottom:8px;
+padding:13px 16px;
+border:1px solid rgba(255,248,235,.07);
+border-radius:14px;
+background:linear-gradient(135deg, var(–card) 0%, rgba(200,162,106,.06) 100%);
+position:relative; overflow:hidden;
+}
+.sess-pattern-desc::before {
+content:’’; position:absolute; left:0; top:0; bottom:0; width:2px;
+background:linear-gradient(180deg, var(–amber) 0%, transparent 100%); opacity:.5;
+}
+.sess-pattern-name {
+font-size:16px; font-weight:400; color:var(–text); letter-spacing:.04em; margin-bottom:5px;
+}
+.sess-pattern-text {
+font-size:12px; font-weight:300; font-style:italic;
+color:var(–muted); line-height:1.6;
+}
+.sess-pattern-steps {
+display:flex; gap:5px; margin-top:8px; flex-wrap:wrap;
+}
+.sess-pattern-step {
+font-family:var(–fm); font-size:7.5px; padding:3px 8px; border-radius:20px;
+background:var(–bar-bg); border:1px solid var(–border);
+color:var(–muted2); letter-spacing:.07em;
+}
 
 .breath-wrap { z-index:1; flex-shrink:0; width:100%; margin-bottom:12px; }
 .breath-bars { display:flex; gap:9px; width:100%; height:clamp(60px,14vw,96px); }
 .bar-col { flex:1; display:flex; flex-direction:column; align-items:center; height:100%; gap:6px; }
-.bar-track { flex:1; width:100%; position:relative; overflow:hidden; border-radius:5px 5px 4px 4px; background:rgba(255,255,255,.03); border:1px solid var(–border); transition:border-color .5s; }
-.bar-track.cur { border-color:rgba(255,255,255,.12); }
+.bar-track { flex:1; width:100%; position:relative; overflow:hidden; border-radius:5px 5px 4px 4px; background:var(–bar-bg); border:1px solid var(–border); transition:border-color .5s; }
+.bar-track.cur { border-color:rgba(128,100,60,.22); }
+
+/* 2.7 — bar-fill direzione per fase */
 .bar-fill { position:absolute; bottom:0; left:0; right:0; height:0%; border-radius:4px 4px 3px 3px; transition:height .95s cubic-bezier(.4,0,.2,1); }
+/* top-fill: per Inspira — dall’alto verso il basso */
+.bar-fill.top-fill { top:0; bottom:auto; height:0%; }
+/* ltr-fill: per Trattieni e Pausa — da sinistra a destra */
+.bar-fill.ltr-fill { top:0; bottom:0; left:0; right:auto; height:100%; width:0%; transition:width .95s cubic-bezier(.4,0,.2,1); }
+
 .bar-fill::after { content:’’; position:absolute; top:-2px; left:0; right:0; height:12px; border-radius:50%; background:inherit; filter:blur(7px); opacity:0; transition:opacity .4s; }
 .bar-track.cur .bar-fill::after { opacity:.7; }
 .bar-lbl { font-family:var(–fm); font-size:7.5px; letter-spacing:.18em; text-transform:uppercase; color:var(–muted); transition:color .4s; flex-shrink:0; white-space:nowrap; }
@@ -192,15 +283,15 @@ transition:color .6s ease; margin-top:2px;
 
 .sess-vol { display:flex; align-items:center; gap:12px; z-index:1; flex-shrink:0; width:100%; margin-bottom:10px; }
 .prog-area { width:100%; z-index:1; flex-shrink:0; }
-.prog-track { width:100%; height:2px; background:rgba(255,255,255,.06); border-radius:2px; overflow:hidden; margin-bottom:8px; }
+.prog-track { width:100%; height:2px; background:var(–prog-bg); border-radius:2px; overflow:hidden; margin-bottom:8px; }
 .prog-fill { height:100%; border-radius:2px; width:0%; transition:width 1s linear; background:var(–amber); }
 .prog-time { font-family:var(–fm); font-size:10px; color:var(–muted); letter-spacing:.1em; text-align:center; }
 
 /* Debug */
-.debug-toggle { position:fixed; bottom:max(env(safe-area-inset-bottom,0px),14px); right:18px; z-index:500; font-family:var(–fm); font-size:8.5px; letter-spacing:.2em; color:var(–muted2); background:rgba(8,7,5,.85); border:1px solid rgba(255,255,255,.07); padding:5px 14px; border-radius:20px; cursor:pointer; -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px); -webkit-appearance:none; transition:all .2s; }
+.debug-toggle { position:fixed; bottom:max(env(safe-area-inset-bottom,0px),14px); right:18px; z-index:500; font-family:var(–fm); font-size:8.5px; letter-spacing:.2em; color:var(–muted2); background:var(–bg); border:1px solid rgba(255,255,255,.07); padding:5px 14px; border-radius:20px; cursor:pointer; -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px); -webkit-appearance:none; transition:all .2s; }
 .debug-toggle:active { opacity:.6; }
 .debug-toggle.has-error { color:#e07a7a; border-color:rgba(224,122,122,.25); }
-.debug-panel { position:fixed; inset:0; z-index:490; background:rgba(4,3,2,.96); display:flex; flex-direction:column; padding:max(env(safe-area-inset-top,0px),20px) 0 max(env(safe-area-inset-bottom,0px),20px); transition:opacity .25s, transform .25s cubic-bezier(.4,0,.2,1); }
+.debug-panel { position:fixed; inset:0; z-index:490; background:var(–bg); display:flex; flex-direction:column; padding:max(env(safe-area-inset-top,0px),20px) 0 max(env(safe-area-inset-bottom,0px),20px); transition:opacity .25s, transform .25s cubic-bezier(.4,0,.2,1); }
 .debug-panel.hidden { opacity:0; pointer-events:none; transform:translateY(16px); }
 .debug-hdr { display:flex; justify-content:space-between; align-items:center; padding:0 20px 16px; border-bottom:1px solid rgba(255,255,255,.06); flex-shrink:0; }
 .debug-title { font-family:var(–fm); font-size:10px; letter-spacing:.3em; color:var(–muted2); text-transform:uppercase; }
@@ -214,9 +305,9 @@ transition:color .6s ease; margin-top:2px;
 .debug-val.ok  { color:#7a9e7e; }
 .debug-val.err { color:#e07a7a; }
 .debug-val.warn{ color:#c8a26a; }
-.debug-log { background:rgba(255,255,255,.03); border:1px solid var(–border); border-radius:10px; padding:12px; font-family:var(–fm); font-size:9px; color:var(–muted); line-height:1.8; white-space:pre-wrap; word-break:break-all; max-height:180px; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+.debug-log { background:var(–bar-bg); border:1px solid var(–border); border-radius:10px; padding:12px; font-family:var(–fm); font-size:9px; color:var(–muted); line-height:1.8; white-space:pre-wrap; word-break:break-all; max-height:180px; overflow-y:auto; -webkit-overflow-scrolling:touch; }
 .debug-actions { padding:12px 20px 0; flex-shrink:0; display:flex; gap:8px; }
-.debug-btn { flex:1; padding:10px; font-family:var(–fm); font-size:9px; letter-spacing:.15em; text-transform:uppercase; color:var(–muted); border:1px solid var(–border); border-radius:10px; background:rgba(255,255,255,.03); cursor:pointer; -webkit-appearance:none; }
+.debug-btn { flex:1; padding:10px; font-family:var(–fm); font-size:9px; letter-spacing:.15em; text-transform:uppercase; color:var(–muted); border:1px solid var(–border); border-radius:10px; background:var(–bar-bg); cursor:pointer; -webkit-appearance:none; }
 .debug-btn.primary { color:var(–amber); border-color:rgba(200,162,106,.3); }
 
 /* ── END ── */
@@ -248,41 +339,6 @@ color:var(–amber); margin-bottom:3px; transition:color .3s;
 .fq-name { font-size:14px; font-weight:400; color:var(–text); letter-spacing:.02em; line-height:1.2; }
 .fq-desc { font-family:var(–fm); font-size:7.5px; color:var(–muted); margin-top:3px; letter-spacing:.03em; line-height:1.5; }
 
-/* ── PATTERN DESCRIZIONE — solo nella sessione, rimosso dal setup ── */
-
-/* ── TECH DESC in session ── */
-.sess-tech {
-z-index:1; flex-shrink:0; width:100%; margin-bottom:10px;
-padding:14px 16px;
-border:1px solid rgba(255,248,235,.07);
-border-radius:14px;
-background:linear-gradient(135deg, rgba(255,248,235,.025) 0%, rgba(200,162,106,.04) 100%);
-position:relative; overflow:hidden;
-}
-.sess-tech::before {
-content:’’; position:absolute; left:0; top:0; bottom:0; width:2px;
-background:linear-gradient(180deg, var(–amber) 0%, transparent 100%); opacity:.5;
-}
-.sess-tech-lbl {
-font-family:var(–fm); font-size:7.5px; letter-spacing:.4em;
-color:var(–amber); opacity:.7; margin-bottom:7px;
-}
-.sess-tech-text {
-font-size:13px; font-weight:300; font-style:italic;
-color:var(–muted); line-height:1.7;
-}
-.sess-tech-steps {
-display:flex; gap:5px; margin-top:9px; flex-wrap:wrap;
-}
-.sess-tech-step {
-font-family:var(–fm); font-size:7.5px; padding:3px 8px; border-radius:20px;
-background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.07);
-color:var(–muted2); letter-spacing:.07em;
-}
-
-/* ── SOUND ICON in session ── */
-.sess-sound-icon { font-size:22px; line-height:1; }
-
 /* ── SAVE BUTTON ── */
 .save-btn {
 width:100%; padding:13px; border:1px solid rgba(200,162,106,.22); border-radius:12px;
@@ -296,19 +352,289 @@ display:flex; align-items:center; justify-content:center; gap:8px;
 .save-icon { font-size:12px; }
 
 @media (max-height:800px) {
-.countdown { font-size:clamp(116px,32vw,170px); }
+.countdown { font-size:clamp(90px,26vw,140px); }
 .breath-bars { height:58px; }
 }
 @media (max-height:700px) {
 .app-header { padding:14px 24px 18px; }
-.countdown { font-size:clamp(96px,28vw,140px); }
+.countdown { font-size:clamp(76px,22vw,116px); }
 .breath-bars { height:50px; }
 .sec { padding:12px 24px 0; }
 }
 @media (max-height:620px) {
-.countdown { font-size:88px; }
+.countdown { font-size:72px; }
 .breath-bars { height:42px; }
 }
+
+/* ── THEME TOGGLE ── */
+.theme-toggle {
+width:44px; height:26px; border-radius:13px; border:1.5px solid var(–border);
+background:var(–card); cursor:pointer; -webkit-appearance:none; appearance:none;
+transition:background .35s, border-color .35s;
+display:flex; align-items:center; padding:0 3px; flex-shrink:0;
+}
+.theme-toggle-knob {
+width:18px; height:18px; border-radius:50%;
+background:var(–amber);
+transition:transform .35s cubic-bezier(.4,0,.2,1), background .35s;
+flex-shrink:0; position:relative;
+display:flex; align-items:center; justify-content:center;
+font-size:9px; line-height:1;
+}
+/* dark: knob left (moon); light: knob right (sun) */
+:root.light .theme-toggle-knob { transform:translateX(18px); }
+.theme-toggle-icon { pointer-events:none; }
+
+/* ── LIGHT THEME: orbs più tenui ── */
+:root.light .orb1 { opacity:.07; }
+:root.light .orb2 { opacity:.05; }
+
+/* ── LIGHT: pattern card active ── */
+:root.light .pattern-card.active { box-shadow:0 0 0 1px rgba(154,108,50,.4), inset 0 0 20px rgba(154,108,50,.06); }
+:root.light .pattern-card.active[data-id=“deep”] { box-shadow:0 0 0 1px rgba(74,122,80,.4), inset 0 0 20px rgba(74,122,80,.06); }
+:root.light .pattern-card.active[data-id=“slow”] { box-shadow:0 0 0 1px rgba(136,64,96,.4), inset 0 0 20px rgba(136,64,96,.06); }
+
+/* ── LIGHT: start button testo scuro rimane ok ── */
+:root.light body { background:var(–bg); }
+
+/* ── LIGHT: meta theme-color ── override via JS ── */
+/* ── LIGHT: session-specific ── */
+:root.light .bar-track.cur { border-color:rgba(60,40,10,.18); }
+:root.light .debug-row { border-bottom:1px solid rgba(0,0,0,.06); }
+:root.light .debug-hdr { border-bottom:1px solid rgba(0,0,0,.06); }
+:root.light .debug-panel { border-top:none; }
+:root.light .prog-track { background:rgba(0,0,0,.08); }
+
+/* ── SETTINGS PANEL ── */
+.gear-btn {
+width:36px; height:36px; border-radius:50%; border:1px solid var(–border);
+background:var(–card); color:var(–muted); font-size:16px;
+cursor:pointer; display:flex; align-items:center; justify-content:center;
+-webkit-appearance:none; transition:all .2s; flex-shrink:0;
+-webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px);
+}
+.gear-btn:active { transform:rotate(45deg) scale(.92); }
+
+.settings-panel {
+position:fixed; inset:0; z-index:480;
+display:flex; flex-direction:column;
+background:var(–bg);
+padding:max(env(safe-area-inset-top,0px),20px) 0 max(env(safe-area-inset-bottom,0px),24px);
+transition:opacity .3s cubic-bezier(.4,0,.2,1), transform .3s cubic-bezier(.4,0,.2,1);
+}
+.settings-panel.hidden { opacity:0; pointer-events:none; transform:translateY(20px); }
+
+.settings-hdr {
+display:flex; justify-content:space-between; align-items:center;
+padding:0 24px 18px; border-bottom:1px solid var(–border); flex-shrink:0;
+}
+.settings-title {
+font-family:var(–fm); font-size:10px; letter-spacing:.4em;
+color:var(–muted2); text-transform:uppercase;
+}
+.settings-close {
+font-family:var(–fm); font-size:10px; color:var(–muted);
+cursor:pointer; padding:5px 12px; border:1px solid var(–border);
+border-radius:8px; background:var(–card); -webkit-appearance:none;
+}
+
+.settings-scroll { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:20px 24px; }
+.settings-section { margin-bottom:28px; }
+.settings-section-title {
+font-family:var(–fm); font-size:8px; letter-spacing:.38em;
+color:var(–muted2); text-transform:uppercase; margin-bottom:14px;
+display:flex; align-items:center; gap:10px;
+}
+.settings-section-title::after { content:’’; flex:1; height:1px; background:var(–border); }
+
+/* Toggle row */
+.toggle-row {
+display:flex; justify-content:space-between; align-items:center;
+padding:14px 0; border-bottom:1px solid var(–border);
+}
+.toggle-row:last-child { border-bottom:none; }
+.toggle-info { flex:1; min-width:0; padding-right:16px; }
+.toggle-label { font-size:15px; font-weight:400; color:var(–text); letter-spacing:.02em; }
+.toggle-desc { font-family:var(–fm); font-size:8.5px; color:var(–muted); margin-top:3px; letter-spacing:.03em; line-height:1.5; }
+
+/* iOS-style toggle switch */
+.sw {
+width:48px; height:28px; border-radius:14px; flex-shrink:0;
+background:var(–border); position:relative; cursor:pointer;
+transition:background .25s; -webkit-appearance:none; border:none;
+outline:none;
+}
+.sw::after {
+content:’’; position:absolute; top:3px; left:3px;
+width:22px; height:22px; border-radius:11px; background:#fff;
+transition:transform .25s cubic-bezier(.4,0,.2,1);
+box-shadow:0 1px 4px rgba(0,0,0,.25);
+}
+.sw.on { background:var(–amber); }
+.sw.on::after { transform:translateX(20px); }
+.sw.sage.on { background:var(–sage); }
+
+/* Nota tecnica audio */
+.audio-note {
+background:var(–card); border:1px solid var(–border); border-radius:12px;
+padding:13px 15px; margin-top:12px;
+}
+.audio-note-title { font-family:var(–fm); font-size:8px; letter-spacing:.3em; color:var(–amber); margin-bottom:6px; }
+.audio-note-text { font-family:var(–fm); font-size:8.5px; color:var(–muted); line-height:1.7; }
+
+/* ── TRACCIA PERSONALIZZATA ── */
+.custom-track-area {
+margin-top:14px;
+border:1px solid var(–border);
+border-radius:14px;
+overflow:hidden;
+transition:opacity .3s, border-color .3s;
+}
+.custom-track-area.disabled { opacity:.38; pointer-events:none; }
+
+/* input file: invisibile ma cliccabile via <label> */
+#customFileInput { position:absolute; width:1px; height:1px; opacity:0; pointer-events:none; }
+
+/* ── Stato EMPTY ── */
+.ct-empty { padding:16px; display:flex; flex-direction:column; gap:12px; background:var(–card); }
+
+/* Pulsante “Scegli dal dispositivo” — visivamente un vero pulsante */
+.ct-pick-btn {
+display:flex; align-items:center; gap:12px;
+padding:14px 16px; border-radius:11px;
+border:1.5px solid var(–border);
+background:rgba(255,255,255,.04);
+cursor:pointer; transition:all .2s;
+-webkit-tap-highlight-color:transparent;
+text-decoration:none;
+}
+.ct-pick-btn:active { background:rgba(200,162,106,.08); border-color:rgba(200,162,106,.5); transform:scale(.98); }
+.ct-pick-icon { font-size:22px; flex-shrink:0; }
+.ct-pick-main {
+font-family:var(–fd); font-size:15px; font-weight:400;
+color:var(–text); letter-spacing:.02em; line-height:1.2;
+}
+.ct-pick-sub {
+font-family:var(–fm); font-size:8px; letter-spacing:.15em;
+color:var(–muted); text-transform:uppercase; display:block; margin-top:2px;
+}
+
+/* Separatore OR */
+.ct-or {
+display:flex; align-items:center; gap:10px;
+font-family:var(–fm); font-size:8px; letter-spacing:.25em;
+color:var(–muted2); text-transform:uppercase;
+}
+.ct-or::before,.ct-or::after { content:’’; flex:1; height:1px; background:var(–border); }
+
+/* URL input row */
+.ct-url-row { display:flex; gap:8px; align-items:stretch; }
+.ct-url-input {
+flex:1; min-width:0;
+font-family:var(–fm); font-size:11px; letter-spacing:.02em;
+color:var(–text);
+/* Sfondo esplicito per dark e light — non dipende da –bg2 */
+background:rgba(255,255,255,.06);
+border:1.5px solid rgba(255,255,255,.14);
+border-radius:10px;
+padding:11px 12px; outline:none;
+-webkit-appearance:none; transition:border-color .2s, background .2s;
+}
+:root.light .ct-url-input {
+background:rgba(0,0,0,.04);
+border-color:rgba(0,0,0,.14);
+}
+.ct-url-input:focus {
+background:rgba(255,255,255,.10);
+border-color:rgba(200,162,106,.6);
+}
+:root.light .ct-url-input:focus {
+background:rgba(0,0,0,.06);
+border-color:rgba(154,108,50,.6);
+}
+.ct-url-input::placeholder {
+color:var(–muted);
+font-size:9.5px;
+letter-spacing:.04em;
+}
+.ct-url-btn {
+flex-shrink:0; padding:0 14px; border-radius:10px;
+border:1.5px solid rgba(200,162,106,.5);
+background:rgba(200,162,106,.12); color:var(–amber);
+font-family:var(–fm); font-size:9px; letter-spacing:.18em; text-transform:uppercase;
+cursor:pointer; -webkit-appearance:none; transition:all .2s; white-space:nowrap;
+min-height:44px;
+}
+.ct-url-btn:active { background:rgba(200,162,106,.25); transform:scale(.97); }
+.ct-url-btn:disabled { opacity:.4; }
+.ct-url-hint {
+font-family:var(–fm); font-size:8px; color:var(–muted);
+letter-spacing:.08em; text-align:center; padding-bottom:2px;
+}
+
+/* ── Stato LOADED ── */
+.ct-loaded { background:var(–card); }
+.ct-file-row {
+display:flex; align-items:center; gap:10px;
+padding:14px 14px 0;
+}
+.ct-file-icon { font-size:20px; flex-shrink:0; }
+.ct-file-info { flex:1; min-width:0; }
+.ct-file-name {
+font-family:var(–fm); font-size:10px; color:var(–sage);
+letter-spacing:.04em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.ct-file-meta {
+font-family:var(–fm); font-size:8px; color:var(–muted2);
+letter-spacing:.1em; margin-top:2px;
+}
+.ct-change-btn {
+flex-shrink:0; padding:6px 12px; border-radius:8px;
+border:1px solid var(–border); background:var(–bar-bg);
+color:var(–muted); font-family:var(–fm); font-size:8px;
+letter-spacing:.18em; text-transform:uppercase;
+cursor:pointer; -webkit-appearance:none; transition:all .2s;
+}
+.ct-change-btn:active { border-color:rgba(200,162,106,.4); color:var(–amber); }
+
+/* Player preview */
+.custom-controls {
+display:flex; align-items:center; gap:10px;
+padding:12px 14px; border-top:1px solid var(–border);
+margin-top:12px;
+}
+.custom-play-btn {
+width:36px; height:36px; border-radius:50%; flex-shrink:0;
+border:1px solid var(–border); background:var(–card);
+color:var(–text); font-size:14px; cursor:pointer;
+display:flex; align-items:center; justify-content:center;
+-webkit-appearance:none; transition:all .2s;
+}
+.custom-play-btn:active { transform:scale(.92); }
+.custom-play-btn.playing { border-color:rgba(122,158,126,.5); color:var(–sage); }
+.custom-waveform {
+flex:1; height:28px; border-radius:6px;
+background:var(–bar-bg); border:1px solid var(–border);
+position:relative; overflow:hidden;
+}
+.custom-progress {
+position:absolute; top:0; left:0; bottom:0; width:0%;
+background:linear-gradient(90deg,rgba(122,158,126,.4) 0%,rgba(122,158,126,.15) 100%);
+transition:width .5s linear;
+}
+.custom-time {
+font-family:var(–fm); font-size:9px; color:var(–muted);
+letter-spacing:.08em; flex-shrink:0; min-width:38px; text-align:right;
+}
+.custom-remove {
+width:28px; height:28px; border-radius:50%; flex-shrink:0;
+border:1px solid var(–border); background:transparent;
+color:var(–muted); font-size:11px; cursor:pointer;
+display:flex; align-items:center; justify-content:center;
+-webkit-appearance:none; transition:all .2s;
+}
+.custom-remove:active { color:var(–rose); border-color:var(–rose); }
+
 </style>
 
 </head>
@@ -321,11 +647,16 @@ display:flex; align-items:center; justify-content:center; gap:8px;
     <div class="app-title-wrap">
       <h1 class="app-title">Respira</h1>
       <p class="app-sub">respirazione assistita</p>
+      <!-- 2.9 — credit -->
+      <p class="app-credit">by ninGia zuleziM</p>
     </div>
-    <button class="start-btn-header" id="startBtn">Inizia<br>›</button>
+    <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+      <button class="gear-btn" id="gearBtn" aria-label="Impostazioni">⚙</button>
+      <button class="start-btn-header" id="startBtn">Inizia<br>›</button>
+    </div>
   </div>
 
-  <!-- SALVA IMPOSTAZIONI — prima di tutto -->
+  <!-- SALVA IMPOSTAZIONI -->
 
   <div class="sec" style="padding-top:16px;padding-bottom:0">
     <button class="save-btn" id="saveBtn"><span class="save-icon">↓</span> Salva impostazioni</button>
@@ -334,6 +665,7 @@ display:flex; align-items:center; justify-content:center; gap:8px;
   <div class="sec">
     <div class="sec-lbl">01 — Tecnica di respirazione</div>
     <div class="pattern-grid">
+      <!-- 2.5 — "Tieni" → "Trattieni" nei chip -->
       <div class="pattern-card active" data-id="box">
         <div class="pm"></div>
         <div class="pi"><div class="pn">Box Breathing</div><div class="pd">Riduce stress acuto · stimola concentrazione</div></div>
@@ -459,11 +791,14 @@ display:flex; align-items:center; justify-content:center; gap:8px;
     <div class="orb orb2" id="orb2"></div>
   </div>
   <div class="sess-hdr">
-    <button class="close-btn" id="closeBtn">✕</button>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <button class="close-btn" id="closeBtn">✕</button>
+      <button class="gear-btn" id="gearBtnSession" aria-label="Impostazioni" style="opacity:.8;">⚙</button>
+    </div>
     <div class="sess-meta">
       <div class="spl" id="sessPatLabel">Box 4-4-4-4</div>
       <div style="display:flex;align-items:center;gap:6px;justify-content:flex-end;margin-top:3px;">
-        <span class="sess-sound-icon" id="sessSoundIcon">🌌</span>
+        <span class="sess-sound-icon" id="sessSoundIcon" style="font-size:22px;line-height:1;">🌌</span>
         <span class="shl" id="sessTrackLabel">Cosmo</span>
       </div>
     </div>
@@ -472,20 +807,29 @@ display:flex; align-items:center; justify-content:center; gap:8px;
     <span class="tdot" id="tickerDot"></span>
     <span class="ttxt" id="tickerText">Avvio sintesi audio…</span>
   </div>
+
+  <!-- COUNT UP -->
+
   <div class="phase-info">
     <div class="phase-lbl" id="phaseLbl">—</div>
-    <div class="countdown" id="countNum">—</div>
-    <div class="cunit">sec</div>
+    <div class="countdown-row">
+      <div class="countdown" id="countNum">1</div>
+      <div class="cunit">sec</div>
+    </div>
   </div>
+
   <div class="breath-wrap">
     <div class="breath-bars" id="breathBars"></div>
   </div>
-  <!-- Descrizione tecnica della respirazione attiva -->
-  <div class="sess-tech" id="sessTech">
-    <div class="sess-tech-lbl" id="sessTechLbl">COME FUNZIONA</div>
-    <div class="sess-tech-text" id="sessTechText">—</div>
-    <div class="sess-tech-steps" id="sessTechSteps"></div>
+
+  <!-- 1.2 — Nome tecnica + descrizione (al posto del vecchio sess-tech) -->
+
+  <div class="sess-pattern-desc" id="sessPatternDesc">
+    <div class="sess-pattern-name" id="sessPatternName">—</div>
+    <div class="sess-pattern-text" id="sessPatternText">—</div>
+    <div class="sess-pattern-steps" id="sessPatternSteps"></div>
   </div>
+
   <div class="sess-vol">
     <span class="vi">🔈</span>
     <input type="range" id="sessVol" min="0" max="1" step="0.05" value="0.6">
@@ -510,6 +854,128 @@ display:flex; align-items:center; justify-content:center; gap:8px;
     <div class="stat"><span class="stat-val" id="statTrack">—</span><span class="stat-lbl">brano</span></div>
   </div>
   <button class="again-btn" id="againBtn">Nuova sessione</button>
+</div>
+
+<!-- ═══ SETTINGS PANEL ═══ -->
+
+<div class="settings-panel hidden" id="settingsPanel">
+  <div class="settings-hdr">
+    <span class="settings-title">⚙ Impostazioni</span>
+    <button class="settings-close" id="settingsClose">Chiudi</button>
+  </div>
+  <div class="settings-scroll">
+
+```
+<div class="settings-section">
+  <div class="settings-section-title">Audio</div>
+
+  <div class="toggle-row">
+    <div class="toggle-info">
+      <div class="toggle-label">Modalità Cuffie</div>
+      <div class="toggle-desc">Ottimizza le frequenze per cuffie e auricolari.<br>Disabilita se usi gli altoparlanti del telefono.</div>
+    </div>
+    <button class="sw on" id="swHeadphones" role="switch" aria-checked="true"></button>
+  </div>
+
+  <div class="toggle-row">
+    <div class="toggle-info">
+      <div class="toggle-label">Limiter Master</div>
+      <div class="toggle-desc">Riduce la distorsione sugli altoparlanti.<br>Comprime i picchi audio prima dell'uscita.</div>
+    </div>
+    <button class="sw on sage" id="swLimiter" role="switch" aria-checked="true"></button>
+  </div>
+
+  <div class="audio-note">
+    <div class="audio-note-title">PERCHÉ SI SENTE DISTORSIONE</div>
+    <div class="audio-note-text">
+      Gli oscillatori sinusoidali sommati creano picchi di ampiezza (clipping). 
+      Gli altoparlanti piccoli degli smartphone distorcono già a volumi medi, 
+      specialmente sotto i 100 Hz. Con le cuffie questo è quasi impercettibile.<br><br>
+      <strong style="color:var(--text)">Soluzione:</strong> il Limiter Master comprime 
+      i picchi · la Modalità Altoparlante taglia le sub-basse sotto 120 Hz e applica 
+      un high-pass filter che riduce la fatica della membrana.
+    </div>
+  </div>
+</div>
+
+<div class="settings-section">
+  <div class="settings-section-title">Tema</div>
+  <div class="toggle-row">
+    <div class="toggle-info">
+      <div class="toggle-label">Tema Chiaro</div>
+      <div class="toggle-desc">Passa dalla modalità scura a quella chiara.</div>
+    </div>
+    <button class="sw" id="swTheme" role="switch" aria-checked="false"></button>
+  </div>
+</div>
+
+<div class="settings-section">
+  <div class="settings-section-title">Traccia Personale</div>
+
+  <div class="toggle-row">
+    <div class="toggle-info">
+      <div class="toggle-label">Usa traccia personale</div>
+      <div class="toggle-desc">Sostituisce atmosfera sonora e frequenza con il tuo audio. Formati supportati: MP3, AAC, WAV, OGG.</div>
+    </div>
+    <button class="sw" id="swCustomTrack" role="switch" aria-checked="false"></button>
+  </div>
+
+  <div class="custom-track-area disabled" id="customTrackArea">
+
+    <!-- Stato: nessun file caricato -->
+    <div class="ct-empty" id="ctEmpty">
+
+      <!-- Pulsante principale: apre file picker nativo del sistema -->
+      <label class="ct-pick-btn" for="customFileInput">
+        <span class="ct-pick-icon">📂</span>
+        <span class="ct-pick-main">Scegli dal dispositivo</span>
+        <span class="ct-pick-sub">MP3 · AAC · WAV · OGG · FLAC</span>
+      </label>
+      <input type="file" id="customFileInput" accept="audio/*,audio/flac,.mp3,.aac,.wav,.ogg,.flac,.m4a,.opus">
+
+      <!-- Separatore -->
+      <div class="ct-or"><span>oppure</span></div>
+
+      <!-- URL esterno (link diretto a file audio) -->
+      <div class="ct-url-row">
+        <input type="url" id="customUrlInput" class="ct-url-input"
+          placeholder="https://… (link diretto a file audio)"
+          autocomplete="off" autocorrect="off" spellcheck="false">
+        <button class="ct-url-btn" id="customUrlBtn">Carica</button>
+      </div>
+      <div class="ct-url-hint">Incolla l'URL diretto di un file audio online</div>
+
+    </div>
+
+    <!-- Stato: file caricato -->
+    <div class="ct-loaded" id="ctLoaded" style="display:none">
+
+      <div class="ct-file-row">
+        <span class="ct-file-icon">🎵</span>
+        <div class="ct-file-info">
+          <div class="ct-file-name" id="ctFileName">—</div>
+          <div class="ct-file-meta" id="ctFileMeta">—</div>
+        </div>
+        <button class="ct-change-btn" id="ctChangeBtn">Cambia</button>
+      </div>
+
+      <!-- Player preview -->
+      <div class="custom-controls" id="customControls">
+        <button class="custom-play-btn" id="customPlayBtn">▶</button>
+        <div class="custom-waveform">
+          <div class="custom-progress" id="customProgress"></div>
+        </div>
+        <span class="custom-time" id="customTime">0:00</span>
+        <button class="custom-remove" id="customRemove" title="Rimuovi">✕</button>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+```
+
+  </div>
 </div>
 
 <!-- ═══ DEBUG ═══ -->
@@ -550,14 +1016,14 @@ display:flex; align-items:center; justify-content:center; gap:8px;
 'use strict';
 
 /* ══════════════════════════════════════════════
-   DATI
+   DATI  (2.5 — "Trattieni" al posto di "Tieni")
 ══════════════════════════════════════════════ */
 var PATTERNS = {
   box:  {
     name:'Box 4-4-4-4', color:'#c8a26a',
-    phases:[{n:'Inspira',d:4},{n:'Tieni',d:4},{n:'Espira',d:4},{n:'Pausa',d:4}],
+    phases:[{n:'Inspira',d:4},{n:'Trattieni',d:4},{n:'Espira',d:4},{n:'Pausa',d:4}],
     desc:'Inspira, trattieni, espira e pausa — ognuna 4 secondi. Attiva il sistema parasimpatico, riduce il cortisolo e riporta l\'attenzione al momento presente.',
-    steps:['Inspira 4s','Tieni 4s','Espira 4s','Pausa 4s']
+    steps:['Inspira 4s','Trattieni 4s','Espira 4s','Pausa 4s']
   },
   deep: {
     name:'Coerenza Cardiaca', color:'#7a9e7e',
@@ -572,14 +1038,14 @@ var PATTERNS = {
     steps:['Inspira 6s','Espira 6s']
   }
 };
-var PC = { Inspira:'#c8a26a', Tieni:'#7a9e7e', Espira:'#b07a8a', Pausa:'#9a8a78' };
+/* Colori per fase */
+var PC = { Inspira:'#c8a26a', Trattieni:'#7a9e7e', Espira:'#b07a8a', Pausa:'#9a8a78' };
 var TRACKS = {
   cosmos: { name:'Cosmo',   color:'#7a8ea0', icon:'🌌' },
   forest: { name:'Foresta', color:'#7a9e7a', icon:'🌿' },
   ocean:  { name:'Oceano',  color:'#6a8a9e', icon:'🌊' },
   temple: { name:'Tempio',  color:'#9a8a7a', icon:'🔔' }
 };
-/* Frequenze Solfeggio — tradizione meditativa */
 var FREQS = {
   none: { hz:0,   name:'Nessuna' },
   f396: { hz:396, name:'396 Hz · Liberazione' },
@@ -592,7 +1058,7 @@ var FREQS = {
 };
 
 /* ══════════════════════════════════════════════
-   PERSISTENZA IMPOSTAZIONI (localStorage)
+   PERSISTENZA
 ══════════════════════════════════════════════ */
 var STORAGE_KEY = 'respira_cfg_v1';
 function saveSettings() {
@@ -618,32 +1084,15 @@ function loadSettings() {
   } catch(e) { return false; }
 }
 function applySettingsToUI() {
-  /* pattern */
   qsa('.pattern-card').forEach(function(c){ c.classList.toggle('active', c.dataset.id===cfg.pattern); });
-  /* duration */
   qsa('.dur-pill').forEach(function(p){ p.classList.toggle('active', parseInt(p.dataset.min)===cfg.minutes); });
-  /* track */
   qsa('.track-card').forEach(function(c){ c.classList.toggle('active', c.dataset.tid===cfg.track); });
-  /* freq */
   qsa('.freq-card').forEach(function(c){ c.classList.toggle('active', c.dataset.fid===cfg.freq); });
-  /* vol */
   var vs=document.getElementById('volSetup'); if(vs) vs.value=cfg.vol;
-}
-function updateTechDesc(patId) {
-  var p = PATTERNS[patId];
-  var el = document.getElementById('techDescText');
-  var st = document.getElementById('techSteps');
-  if (el) el.textContent = p.desc;
-  if (st) {
-    st.innerHTML = '';
-    p.steps.forEach(function(s){
-      var sp = document.createElement('span');
-      sp.className = 'tech-step'; sp.textContent = s; st.appendChild(sp);
-    });
-  }
 }
 
 var cfg  = { pattern:'box', minutes:3, track:'cosmos', freq:'none', vol:0.6 };
+
 var sess = { timer:null, total:0, elapsed:0, phIdx:0, phElapsed:0, cycles:0 };
 
 /* ══════════════════════════════════════════════
@@ -688,22 +1137,75 @@ document.getElementById('dbCopy').addEventListener('click',function(){
 function showDebugToggle(show){ document.getElementById('debugToggle').classList.toggle('hidden',!show); }
 
 /* ══════════════════════════════════════════════
-   WEB AUDIO ENGINE — SINTESI PROCEDURALE
-   Nessun file esterno. Funziona su Safari iOS.
+   WEB AUDIO ENGINE
 ══════════════════════════════════════════════ */
 var AC=null, masterGain=null, activeNodes=[], synthActive=false, synthTimers=[];
-var freqNode=null; /* nodo separato per frequenza Solfeggio */
+var freqNode=null;
+/* Master chain: HPF → Compressor/Limiter → masterGain → destination */
+var masterHPF=null, masterComp=null;
+
+/* Opzioni audio dal settings panel */
+var audioOpts = { headphones: true, limiter: true };
 
 function initAC() {
   if (AC) return true;
   try {
     AC = new (window.AudioContext||window.webkitAudioContext)();
+
+    /* ── MASTER CHAIN ──────────────────────────────
+       oscillatori → masterGain → HPF → Compressor → destination
+       HPF: taglia frequenze sotto cutoff (altoparlanti: 120Hz, cuffie: 30Hz)
+       Compressor: limiter che previene il clipping digitale
+    ──────────────────────────────────────────────── */
     masterGain = AC.createGain();
     masterGain.gain.value = cfg.vol;
-    masterGain.connect(AC.destination);
-    dlog('AudioContext OK · stato: '+AC.state,'ok');
+
+    /* High-pass filter: elimina sub-bassi che saturano gli altoparlanti */
+    masterHPF = AC.createBiquadFilter();
+    masterHPF.type = 'highpass';
+    masterHPF.Q.value = 0.5;
+
+    /* Dynamics compressor usato come limiter (ratio alta, attack veloce) */
+    masterComp = AC.createDynamicsCompressor();
+    masterComp.threshold.value = -6;   /* dBFS: interviene a -6 dB */
+    masterComp.knee.value      = 3;    /* morbido */
+    masterComp.ratio.value     = 12;   /* compressione forte → limiter */
+    masterComp.attack.value    = 0.003;/* 3ms: cattura i picchi */
+    masterComp.release.value   = 0.18; /* 180ms */
+
+    /* Collega la catena */
+    masterGain.connect(masterHPF);
+    masterHPF.connect(masterComp);
+    masterComp.connect(AC.destination);
+
+    applyAudioProfile();
+    dlog('AudioContext OK · catena: Gain→HPF→Limiter→Out','ok');
     return true;
   } catch(e) { dlog('AudioContext FALLITO: '+e.message,'error'); return false; }
+}
+
+/* Applica il profilo audio in base alle opzioni */
+function applyAudioProfile() {
+  if (!AC || !masterHPF || !masterComp) return;
+  var t = AC.currentTime;
+  if (audioOpts.headphones) {
+    /* Cuffie: HPF molto basso (passa tutto sopra 30 Hz) */
+    masterHPF.frequency.setTargetAtTime(30, t, 0.1);
+    masterHPF.Q.setTargetAtTime(0.3, t, 0.1);
+  } else {
+    /* Altoparlanti: HPF a 120 Hz, taglia le sub-basse che distorcono */
+    masterHPF.frequency.setTargetAtTime(120, t, 0.1);
+    masterHPF.Q.setTargetAtTime(0.7, t, 0.1);
+  }
+  if (audioOpts.limiter) {
+    masterComp.threshold.setTargetAtTime(-6,  t, 0.05);
+    masterComp.ratio.setTargetAtTime(12, t, 0.05);
+  } else {
+    /* Limiter disabilitato: ratio bassissima = quasi bypass */
+    masterComp.threshold.setTargetAtTime(-1, t, 0.05);
+    masterComp.ratio.setTargetAtTime(1, t, 0.05);
+  }
+  dlog('Profilo audio: '+(audioOpts.headphones?'Cuffie':'Altoparlanti')+' · Limiter:'+(audioOpts.limiter?'ON':'OFF'));
 }
 
 function resumeAC() { if(AC&&AC.state==='suspended') AC.resume(); }
@@ -713,19 +1215,16 @@ function setMasterVol(v) {
   if(masterGain&&AC) masterGain.gain.setTargetAtTime(v,AC.currentTime,0.1);
 }
 
-/* Avvia il tono Solfeggio come strato separato, sotto al master */
 function startFreqTone(fid) {
   stopFreqTone();
   var f=FREQS[fid];
   if(!f||f.hz===0||!AC||!masterGain) return;
   var g=AC.createGain();
-  /* Gain basso: il tono è un sottofondo quasi subliminale */
   g.gain.setValueAtTime(0,AC.currentTime);
   g.gain.linearRampToValueAtTime(0.045,AC.currentTime+3.0);
   g.connect(masterGain);
   var osc=AC.createOscillator(); osc.type='sine';
   osc.frequency.value=f.hz;
-  /* Leggero LFO di ampiezza (tremolo lentissimo) */
   var lfo=AC.createOscillator(); lfo.type='sine'; lfo.frequency.value=0.06;
   var lg=AC.createGain(); lg.gain.value=0.008;
   lfo.connect(lg); lg.connect(g.gain); lfo.start(0);
@@ -745,7 +1244,6 @@ function stopFreqTone() {
   },1200);
 }
 
-/* Oscillatore semplice collegato al master */
 function mkOsc(type, freq, gain, detune) {
   if(!AC||!masterGain) return null;
   var g=AC.createGain(); g.gain.value=gain; g.connect(masterGain);
@@ -755,7 +1253,6 @@ function mkOsc(type, freq, gain, detune) {
   var node={osc:o,gain:g}; activeNodes.push(node); return node;
 }
 
-/* Sorgente rumore bianco filtrato */
 function mkNoise(gainVal, filterHz, filterQ) {
   if(!AC||!masterGain) return null;
   var len=AC.sampleRate*4;
@@ -770,7 +1267,6 @@ function mkNoise(gainVal, filterHz, filterQ) {
   var node={src:src,gain:g,filt:filt}; activeNodes.push(node); return node;
 }
 
-/* LFO che modula il gain.gain di un nodo */
 function mkLFO(targetNode, rate, depth, base) {
   if(!AC||!targetNode) return null;
   targetNode.gain.gain.value=base;
@@ -780,7 +1276,6 @@ function mkLFO(targetNode, rate, depth, base) {
   activeNodes.push({osc:lfo,gain:lg}); return lfo;
 }
 
-/* Campana sintetizzata (additiva) */
 function ringBell(freq, vol) {
   if(!AC||!masterGain) return;
   var t=AC.currentTime;
@@ -794,7 +1289,6 @@ function ringBell(freq, vol) {
   });
 }
 
-/* ── ATMOSFERE ── */
 function startForest() {
   dlog('Atmosfera: Foresta');
   var p1=mkOsc('sine',55,0.16);
@@ -803,7 +1297,6 @@ function startForest() {
   mkNoise(0.055,260,0.7);
   mkLFO(p1,0.07,0.05,0.16);
   mkLFO(p2,0.11,0.03,0.10);
-  /* Armonici lenti */
   var notes=[55,65.4,73.4,82,98,110]; var ni=0;
   function arpTick(){
     if(!synthActive) return;
@@ -841,13 +1334,11 @@ function startOcean() {
   mkOsc('sine',42,0.07);
   mkOsc('sine',56,0.04,5);
   if(n1&&AC) {
-    /* Onda primaria */
     var lfo1=AC.createOscillator(); lfo1.type='sine'; lfo1.frequency.value=0.10;
     var lg1=AC.createGain(); lg1.gain.value=0.08;
     lfo1.connect(lg1); lg1.connect(n1.gain.gain); lfo1.start(0);
     n1.gain.gain.value=0.20;
     activeNodes.push({osc:lfo1,gain:lg1});
-    /* Irregolarità */
     var lfo2=AC.createOscillator(); lfo2.type='sine'; lfo2.frequency.value=0.17;
     var lg2=AC.createGain(); lg2.gain.value=0.035;
     lfo2.connect(lg2); lg2.connect(n1.gain.gain); lfo2.start(0);
@@ -873,6 +1364,12 @@ function startTemple() {
 
 function stopSynth() {
   synthActive=false;
+  /* Se stava girando la traccia personale → fade-out */
+  if(customOpts.enabled && customLoaded) {
+    stopCustomAudioSession();
+    synthTimers.forEach(function(t){clearTimeout(t);}); synthTimers=[];
+    return;
+  }
   synthTimers.forEach(function(t){clearTimeout(t);}); synthTimers=[];
   stopFreqTone();
   if(masterGain&&AC) masterGain.gain.setTargetAtTime(0,AC.currentTime,0.35);
@@ -891,6 +1388,13 @@ function stopSynth() {
 
 function startSynth(trackId, onReady) {
   if(!AC){dlog('AC non disponibile','error');return;}
+  /* Se traccia personale abilitata e caricata → usa quella */
+  if(customOpts.enabled && customLoaded) {
+    synthActive=true; activeNodes=[];
+    var ok = startCustomAudioSession(onReady);
+    if(!ok && onReady) onReady('⚠ File non disponibile');
+    return;
+  }
   resumeAC();
   synthActive=true; activeNodes=[];
   masterGain.gain.setValueAtTime(0,AC.currentTime);
@@ -900,7 +1404,6 @@ function startSynth(trackId, onReady) {
   else if(trackId==='ocean') startOcean();
   else if(trackId==='temple') startTemple();
   else startForest();
-  /* Avvia frequenza Solfeggio se selezionata */
   if(cfg.freq!=='none') startFreqTone(cfg.freq);
   var freqLabel = cfg.freq!=='none' ? ' · '+FREQS[cfg.freq].name : '';
   dlog('Sintesi avviata: '+TRACKS[trackId].name+freqLabel,'ok');
@@ -908,35 +1411,111 @@ function startSynth(trackId, onReady) {
 }
 
 /* ══════════════════════════════════════════════
-   PREVIEW
+   3 — VISIBILITÀ: riavvia audio tornando sull'app
+══════════════════════════════════════════════ */
+document.addEventListener('visibilitychange', function(){
+  if (!document.hidden) {
+    if (AC && AC.state === 'suspended') {
+      AC.resume().then(function(){ dlog('AC resumed (visibility)'); });
+    }
+    /* Sessione attiva: controlla se audio fermo e riavvia */
+    if (sess.timer) {
+      if (customOpts.enabled && customLoaded) {
+        /* Traccia personale: riprendi se in pausa */
+        if (customAudio && customAudio.paused) {
+          customAudio.play().catch(function(){});
+          dlog('Traccia personale ripresa (visibility)');
+        }
+      } else if (!synthActive) {
+        dlog('Riavvio sintesi dopo ritorno app','ok');
+        startSynth(cfg.track, function(msg){
+          var tt = document.getElementById('tickerText');
+          if(tt) tt.textContent = msg;
+        });
+      }
+    }
+  }
+});
+
+document.addEventListener('touchstart',function(){
+  if(AC&&AC.state==='suspended') AC.resume();
+},{passive:true});
+
+/* ══════════════════════════════════════════════
+   PREVIEW (setup)
+   2.6 — sincronizza slider: n segmenti, non n-1
+   2.7 — inspira: dall'alto; trattieni/pausa: sinistra→destra
 ══════════════════════════════════════════════ */
 var prevTimer=null, prevIdx=0, prevElapsed=0;
+
+/* Tipo di riempimento per ogni fase */
+function fillType(phaseName) {
+  if (phaseName === 'Inspira') return 'top';
+  if (phaseName === 'Trattieni' || phaseName === 'Pausa') return 'ltr';
+  return 'bottom'; /* Espira: dal basso */
+}
+
 function buildPreview(patId){
   var p=PATTERNS[patId], w=document.getElementById('previewBars'); w.innerHTML='';
   p.phases.forEach(function(ph,i){
     var col=mkEl('div','prev-col'); col.id='pv'+i;
     var tr=mkEl('div','prev-track');
-    var fi=mkEl('div','prev-fill'); fi.id='pvf'+i; fi.style.background=PC[ph.n]||'#c8a26a';
+    var ft = fillType(ph.n);
+    var fiClass = 'prev-fill' + (ft==='top'?' fill-top':ft==='ltr'?' fill-ltr':'');
+    var fi=mkEl('div',fiClass); fi.id='pvf'+i;
+    fi.style.background=PC[ph.n]||'#c8a26a';
+    /* 2.4 — numero sec a destra del countdown */
+    var countRow = mkEl('div','prev-count-row');
+    var numEl = mkEl('div','prev-num'); numEl.id='pvn'+i; numEl.textContent=ph.d;
+    var secEl = mkEl('div','prev-sec-lbl'); secEl.textContent='s';
+    countRow.appendChild(numEl); countRow.appendChild(secEl);
     var nm=mkEl('div','prev-name'); nm.textContent=ph.n;
-    tr.appendChild(fi); col.appendChild(tr); col.appendChild(nm); w.appendChild(col);
+    tr.appendChild(fi); col.appendChild(tr); col.appendChild(countRow); col.appendChild(nm);
+    w.appendChild(col);
   });
   prevIdx=0; prevElapsed=0;
   if(prevTimer) clearInterval(prevTimer);
   prevTimer=setInterval(tickPrev,1000);
   renderPrev();
 }
+
 function tickPrev(){
-  var p=PATTERNS[cfg.pattern]; prevElapsed++;
-  if(prevElapsed>=p.phases[prevIdx].d){prevElapsed=0;prevIdx=(prevIdx+1)%p.phases.length;}
+  var p=PATTERNS[cfg.pattern];
+  var ph=p.phases[prevIdx];
+  prevElapsed++;
+  /* 2.6 — completa quando elapsed === durata (non durata-1) */
+  if(prevElapsed >= ph.d){
+    prevElapsed=0;
+    prevIdx=(prevIdx+1)%p.phases.length;
+  }
   renderPrev();
 }
+
 function renderPrev(){
   var p=PATTERNS[cfg.pattern];
   p.phases.forEach(function(ph,i){
-    var f=document.getElementById('pvf'+i); if(!f) return;
+    var f=document.getElementById('pvf'+i);
+    var numEl=document.getElementById('pvn'+i);
+    if(!f) return;
     var a=i===prevIdx;
-    f.style.height=a?((prevElapsed/ph.d)*100)+'%':'0%';
-    f.style.opacity=a?'1':'0.18';
+    /* 2.3 — numero aggiornato correttamente */
+    if(numEl) {
+      numEl.textContent = a ? (ph.d - prevElapsed) : ph.d;
+      numEl.className = 'prev-num' + (a ? ' active-num' : '');
+    }
+    var pct = a ? (prevElapsed / ph.d) * 100 : 0;
+    var ft = fillType(ph.n);
+    if (ft === 'ltr') {
+      f.style.width = a ? pct+'%' : '0%';
+      f.style.opacity = a ? '1' : '0.18';
+    } else if (ft === 'top') {
+      f.style.height = a ? pct+'%' : '0%';
+      f.style.opacity = a ? '1' : '0.18';
+    } else {
+      /* bottom (Espira) */
+      f.style.height = a ? pct+'%' : '0%';
+      f.style.opacity = a ? '1' : '0.18';
+    }
   });
 }
 
@@ -1001,28 +1580,39 @@ function startSession(){
   document.getElementById('sessPatLabel').textContent=p.name;
   document.getElementById('sessTrackLabel').textContent=t.name;
   var si=document.getElementById('sessSoundIcon'); if(si) si.textContent=t.icon;
-  /* Popola descrizione tecnica */
-  var tt=document.getElementById('sessTechText'); if(tt) tt.textContent=p.desc;
-  var ts=document.getElementById('sessTechSteps');
-  if(ts){
-    ts.innerHTML='';
+
+  /* 1.2 — nome tecnica + descrizione nel box sessione */
+  var pname=document.getElementById('sessPatternName'); if(pname) pname.textContent=p.name;
+  var ptext=document.getElementById('sessPatternText'); if(ptext) ptext.textContent=p.desc;
+  var psteps=document.getElementById('sessPatternSteps');
+  if(psteps){
+    psteps.innerHTML='';
     p.steps.forEach(function(s){
       var sp=document.createElement('span');
-      sp.className='sess-tech-step'; sp.textContent=s; ts.appendChild(sp);
+      sp.className='sess-pattern-step'; sp.textContent=s; psteps.appendChild(sp);
     });
   }
+
   document.getElementById('sessVol').value=cfg.vol;
   document.getElementById('orb1').style.background=p.color;
   document.getElementById('orb2').style.background=t.color;
   buildSessionBars(p);
   showScreen('session');
   showDebugToggle(true);
-  updateSessionUI();
   document.getElementById('tickerDot').style.background=t.color;
   startSynth(cfg.track,function(msg){
     document.getElementById('tickerText').textContent=msg;
   });
+  /* Primo tick immediato: display parte da 1 */
+  tick();
   sess.timer=setInterval(tick,1000);
+}
+
+/* 2.7 — bar-fill direzione per fase in sessione */
+function sessionFillType(phaseName) {
+  if (phaseName === 'Inspira') return 'top';
+  if (phaseName === 'Trattieni' || phaseName === 'Pausa') return 'ltr';
+  return 'bottom';
 }
 
 function buildSessionBars(p){
@@ -1030,7 +1620,9 @@ function buildSessionBars(p){
   p.phases.forEach(function(ph,i){
     var col=mkEl('div','bar-col'+(i===0?' cur':'')); col.id='bc'+i;
     var tr=mkEl('div','bar-track'+(i===0?' cur':'')); tr.id='bt'+i;
-    var fi=mkEl('div','bar-fill'); fi.id='bf'+i;
+    var ft = sessionFillType(ph.n);
+    var fiClass = 'bar-fill' + (ft==='top'?' top-fill':ft==='ltr'?' ltr-fill':'');
+    var fi=mkEl('div',fiClass); fi.id='bf'+i;
     var c=PC[ph.n]||'#c8a26a';
     fi.style.background='linear-gradient(180deg,'+c+' 0%,'+rgba(c,.5)+' 100%)';
     var lb=mkEl('div','bar-lbl'); lb.textContent=ph.n;
@@ -1038,41 +1630,64 @@ function buildSessionBars(p){
   });
 }
 
+
 function tick(){
-  sess.elapsed++; sess.phElapsed++; resumeAC();
+  resumeAC();
   var p=PATTERNS[cfg.pattern], ph=p.phases[sess.phIdx];
-  if(sess.phElapsed>=ph.d){
-    sess.phElapsed=0; sess.phIdx=(sess.phIdx+1)%p.phases.length;
-    if(sess.phIdx===0) sess.cycles++;
-  }
-  if(sess.elapsed>=sess.total){endSession();return;}
+  sess.elapsed++;
+  sess.phElapsed++;
   updateSessionUI();
+  if(sess.elapsed >= sess.total){ endSession(); return; }
+  if(sess.phElapsed >= ph.d){
+    sess.phElapsed = 0;
+    sess.phIdx = (sess.phIdx+1) % p.phases.length;
+    if(sess.phIdx===0) sess.cycles++;
+
+  }
 }
 
 function updateSessionUI(){
   var p=PATTERNS[cfg.pattern], ph=p.phases[sess.phIdx];
-  var rem=ph.d-sess.phElapsed, pPr=sess.phElapsed/ph.d, sPr=sess.elapsed/sess.total;
-  var col=PC[ph.n]||p.color;
-  document.getElementById('countNum').textContent=rem;
-  document.getElementById('countNum').style.color=col;
-  document.getElementById('phaseLbl').textContent=ph.n.toUpperCase();
-  document.getElementById('phaseLbl').style.color=col;
-  document.getElementById('orb1').style.background=col;
-  p.phases.forEach(function(phase,i){
+  /* phElapsed va da 1..ph.d → pPr da 1/d..1 */
+  var pPr = sess.phElapsed / ph.d;
+  var sPr = sess.elapsed / sess.total;
+  var col = PC[ph.n] || p.color;
+
+  /* Count UP: parte da 1, arriva a ph.d */
+  document.getElementById('countNum').textContent = sess.phElapsed;
+  document.getElementById('countNum').style.color = col;
+  document.getElementById('phaseLbl').textContent = ph.n.toUpperCase();
+  document.getElementById('phaseLbl').style.color = col;
+  document.getElementById('orb1').style.background = col;
+
+  /* Aggiorna ogni barra usando il tipo di fill della propria fase */
+  p.phases.forEach(function(phase, i){
     var bc=document.getElementById('bc'+i), bt=document.getElementById('bt'+i), bf=document.getElementById('bf'+i);
     if(!bc||!bt||!bf) return;
-    var cur=i===sess.phIdx;
-    bc.classList.toggle('cur',cur); bt.classList.toggle('cur',cur);
-    bf.style.height=cur?(pPr*100)+'%':'0%';
-    bf.style.opacity=cur?'1':'0.14';
+    var cur = (i === sess.phIdx);
+    bc.classList.toggle('cur', cur); bt.classList.toggle('cur', cur);
+
+    var ft = sessionFillType(phase.n); /* tipo di fill della PROPRIA fase, non della corrente */
+    if (ft === 'ltr') {
+      /* Trattieni / Pausa: larghezza sinistra→destra */
+      bf.style.height = '100%';
+      bf.style.width  = cur ? (pPr*100)+'%' : '0%';
+      bf.style.opacity = cur ? '1' : '0.14';
+    } else {
+      /* Inspira (top-fill) o Espira (bottom, default): altezza */
+      bf.style.width   = '100%';
+      bf.style.height  = cur ? (pPr*100)+'%' : '0%';
+      bf.style.opacity = cur ? '1' : '0.14';
+    }
   });
-  document.getElementById('progFill').style.width=(sPr*100)+'%';
-  var left=sess.total-sess.elapsed;
-  document.getElementById('progTime').textContent=Math.floor(left/60)+':'+String(left%60).padStart(2,'0')+' rimasti';
+
+  document.getElementById('progFill').style.width = (sPr*100)+'%';
+  var left = sess.total - sess.elapsed;
+  document.getElementById('progTime').textContent = Math.floor(left/60)+':'+String(left%60).padStart(2,'0')+' rimasti';
 }
 
 function endSession(){
-  clearInterval(sess.timer); stopSynth(); showDebugToggle(false);
+  clearInterval(sess.timer); sess.timer=null; stopSynth(); showDebugToggle(false);
   document.getElementById('statMin').textContent=cfg.minutes;
   document.getElementById('statCycles').textContent=sess.cycles;
   document.getElementById('statTrack').textContent=TRACKS[cfg.track].name;
@@ -1080,20 +1695,12 @@ function endSession(){
 }
 
 document.getElementById('closeBtn').addEventListener('click',function(){
-  clearInterval(sess.timer); stopSynth(); showDebugToggle(false);
+  clearInterval(sess.timer); sess.timer=null; stopSynth(); showDebugToggle(false);
   showScreen('setup'); setTimeout(function(){buildPreview(cfg.pattern);},120);
 });
 document.getElementById('againBtn').addEventListener('click',function(){
   showScreen('setup'); setTimeout(function(){buildPreview(cfg.pattern);},120);
 });
-
-/* Mantieni AudioContext vivo su iOS */
-document.addEventListener('visibilitychange',function(){
-  if(!document.hidden&&AC&&AC.state==='suspended'){AC.resume();dlog('AC resumed');}
-});
-document.addEventListener('touchstart',function(){
-  if(AC&&AC.state==='suspended') AC.resume();
-},{passive:true});
 
 /* ══════════════════════════════════════════════
    UTILS
@@ -1109,11 +1716,441 @@ document.addEventListener('touchmove',function(e){
 },{passive:false});
 
 dlog('App inizializzata · motore sintetico Web Audio API');
-/* Carica impostazioni salvate */
 var hadSaved = loadSettings();
 if (hadSaved) dlog('Impostazioni ripristinate da memoria','ok');
 applySettingsToUI();
 buildPreview(cfg.pattern);
+
+/* ══════════════════════════════════════════════
+   TEMA CHIARO / SCURO
+══════════════════════════════════════════════ */
+var THEME_KEY = 'respira_theme_v1';
+var currentTheme = 'dark';
+
+function applyTheme(theme) {
+  currentTheme = theme;
+  var root = document.documentElement;
+  /* Theme icons now only in settings panel */
+  var meta = document.querySelector('meta[name="theme-color"]');
+  if (theme === 'light') {
+    root.classList.add('light');
+    if (meta) meta.setAttribute('content','#f5f0e8');
+  } else {
+    root.classList.remove('light');
+    if (meta) meta.setAttribute('content','#080705');
+  }
+  /* Sync swTheme in settings panel if open */
+  var swTh = document.getElementById('swTheme');
+  if (swTh) { swTh.classList.toggle('on', theme==='light'); swTh.setAttribute('aria-checked', theme==='light'?'true':'false'); }
+  try { localStorage.setItem(THEME_KEY, theme); } catch(e){}
+}
+
+function toggleTheme() {
+  applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
+}
+
+/* Theme toggle now in settings panel (swTheme) */
+
+/* Ripristina tema salvato */
+(function(){
+  var saved;
+  try { saved = localStorage.getItem(THEME_KEY); } catch(e){}
+  /* Se non salvato, segui preferenza sistema */
+  if (!saved) {
+    saved = (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) ? 'light' : 'dark';
+  }
+  applyTheme(saved);
+})();
+
+/* Segui cambi sistema operativo in tempo reale */
+if (window.matchMedia) {
+  window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', function(e) {
+    var saved;
+    try { saved = localStorage.getItem(THEME_KEY); } catch(ex){}
+    /* Solo se l'utente non ha scelto manualmente */
+    if (!saved) applyTheme(e.matches ? 'light' : 'dark');
+  });
+}
+
+
+/* ══════════════════════════════════════════════
+   SETTINGS PANEL
+══════════════════════════════════════════════ */
+var SETTINGS_KEY = 'respira_settings_v1';
+
+function openSettings() {
+  /* Sync toggle states before showing */
+  swSet('swHeadphones', audioOpts.headphones);
+  swSet('swLimiter',    audioOpts.limiter);
+  swSet('swTheme',      currentTheme === 'light');
+  document.getElementById('settingsPanel').classList.remove('hidden');
+}
+function closeSettings() {
+  document.getElementById('settingsPanel').classList.add('hidden');
+}
+
+/* Generic toggle helper */
+function swSet(id, on) {
+  var el = document.getElementById(id); if(!el) return;
+  el.classList.toggle('on', on);
+  el.setAttribute('aria-checked', on ? 'true' : 'false');
+}
+function swToggle(id, callback) {
+  var el = document.getElementById(id); if(!el) return;
+  var next = !el.classList.contains('on');
+  swSet(id, next);
+  callback(next);
+  saveAllSettings();
+}
+
+/* Wire toggles */
+document.getElementById('swHeadphones').addEventListener('click', function(){
+  swToggle('swHeadphones', function(on){
+    audioOpts.headphones = on;
+    applyAudioProfile();
+    dlog('Modalità: '+(on?'Cuffie':'Altoparlanti'));
+  });
+});
+
+document.getElementById('swLimiter').addEventListener('click', function(){
+  swToggle('swLimiter', function(on){
+    audioOpts.limiter = on;
+    applyAudioProfile();
+    dlog('Limiter: '+(on?'ON':'OFF'));
+  });
+});
+
+document.getElementById('swTheme').addEventListener('click', function(){
+  swToggle('swTheme', function(on){
+    applyTheme(on ? 'light' : 'dark');
+  });
+});
+
+/* Open/close */
+document.getElementById('gearBtn').addEventListener('click', openSettings);
+var gbs = document.getElementById('gearBtnSession');
+if (gbs) gbs.addEventListener('click', openSettings);
+document.getElementById('settingsClose').addEventListener('click', closeSettings);
+
+/* Save/load all settings together */
+
+/* ══════════════════════════════════════════════
+   TRACCIA PERSONALE — IndexedDB
+   DB: respiraDB v1 · store: audioFiles
+   Record: { id:'customTrack', name:string, blob:Blob }
+══════════════════════════════════════════════ */
+var customOpts      = { enabled: false, fileName: null };
+var customObjectURL = null;
+var customAudio     = null;
+var customMediaNode = null;
+var customLoaded    = false;
+
+/* ── IDB helpers ── */
+var IDB_NAME = 'respiraDB', IDB_VER = 1, IDB_STORE = 'audioFiles';
+
+function idbOpen(cb) {
+  var req = indexedDB.open(IDB_NAME, IDB_VER);
+  req.onupgradeneeded = function(e) {
+    var db = e.target.result;
+    if (!db.objectStoreNames.contains(IDB_STORE))
+      db.createObjectStore(IDB_STORE, { keyPath:'id' });
+  };
+  req.onsuccess = function(e){ cb(null, e.target.result); };
+  req.onerror   = function(e){ cb(e.target.error, null); };
+}
+
+function idbSave(name, blob, done) {
+  idbOpen(function(err, db) {
+    if (err) { dlog('IDB save error: '+err,'error'); if(done)done(false); return; }
+    var tx = db.transaction(IDB_STORE,'readwrite');
+    tx.objectStore(IDB_STORE).put({ id:'customTrack', name:name, blob:blob });
+    tx.oncomplete = function(){ db.close(); dlog('IDB: salvato — '+name,'ok'); if(done)done(true); };
+    tx.onerror    = function(){ db.close(); dlog('IDB write error','error'); if(done)done(false); };
+  });
+}
+
+function idbLoad(done) {
+  idbOpen(function(err, db) {
+    if (err) { if(done)done(null); return; }
+    var req = db.transaction(IDB_STORE,'readonly').objectStore(IDB_STORE).get('customTrack');
+    req.onsuccess = function(e){ db.close(); if(done)done(e.target.result||null); };
+    req.onerror   = function(){  db.close(); if(done)done(null); };
+  });
+}
+
+function idbDelete(done) {
+  idbOpen(function(err, db) {
+    if (err) { if(done)done(); return; }
+    var tx = db.transaction(IDB_STORE,'readwrite');
+    tx.objectStore(IDB_STORE).delete('customTrack');
+    tx.oncomplete = function(){ db.close(); dlog('IDB: file rimosso'); if(done)done(); };
+    tx.onerror    = function(){ db.close(); if(done)done(); };
+  });
+}
+
+/* ── Ripristino all'avvio ── */
+function idbRestoreOnStartup() {
+  idbLoad(function(record) {
+    if (!record) return;
+    dlog('IDB: file trovato — '+record.name,'ok');
+    /* applyBlob imposta customLoaded=true e mostra UI loaded */
+    applyBlob(record.blob, record.name);
+    updateCustomTrackUI();
+    swSet('swCustomTrack', customOpts.enabled);
+  });
+}
+
+/* ── Applica blob come traccia caricata ── */
+function applyBlob(blob, name) {
+  if (customObjectURL) URL.revokeObjectURL(customObjectURL);
+  customObjectURL = URL.createObjectURL(blob);
+  customOpts.fileName = name;
+  customLoaded = true;
+  showCtLoaded(name, blob.size);
+  buildPreviewPlayer(customObjectURL);
+}
+
+function showCtEmpty() {
+  document.getElementById('ctEmpty').style.display = '';
+  document.getElementById('ctLoaded').style.display = 'none';
+  document.getElementById('customPlayBtn').textContent = '▶';
+  document.getElementById('customPlayBtn').classList.remove('playing');
+}
+
+function showCtLoaded(name, size) {
+  document.getElementById('ctEmpty').style.display = 'none';
+  document.getElementById('ctLoaded').style.display = '';
+  document.getElementById('ctFileName').textContent = name;
+  /* Formatta dimensione file */
+  var meta = '';
+  if (size) {
+    if (size > 1024*1024) meta = (size/1024/1024).toFixed(1)+' MB';
+    else meta = Math.round(size/1024)+' KB';
+  }
+  document.getElementById('ctFileMeta').textContent = meta || 'file audio';
+}
+
+/* ── Toggle abilita/disabilita ── */
+document.getElementById('swCustomTrack').addEventListener('click', function(){
+  swToggle('swCustomTrack', function(on){
+    customOpts.enabled = on;
+    updateCustomTrackUI();
+    saveAllSettings();
+    dlog('Traccia personale: '+(on?'ON':'OFF'));
+  });
+});
+
+function updateCustomTrackUI() {
+  document.getElementById('customTrackArea').classList.toggle('disabled', !customOpts.enabled);
+}
+
+/* ── File picker via <label for="customFileInput"> — nessun click handler necessario ── */
+document.getElementById('customFileInput').addEventListener('change', function(e){
+  var f = e.target.files && e.target.files[0];
+  if (f) loadCustomFile(f);
+  /* reset value così lo stesso file può essere riselezionato */
+  this.value = '';
+});
+
+/* ── "Cambia" button → riapre file picker ── */
+document.getElementById('ctChangeBtn').addEventListener('click', function(){
+  document.getElementById('customFileInput').click();
+});
+
+/* ── URL remoto ── */
+document.getElementById('customUrlBtn').addEventListener('click', function(){
+  loadCustomUrl();
+});
+document.getElementById('customUrlInput').addEventListener('keydown', function(e){
+  if (e.key === 'Enter') { this.blur(); loadCustomUrl(); }
+});
+/* Su mobile: scrolla il campo in vista quando riceve il focus (tastiera copre lo schermo) */
+document.getElementById('customUrlInput').addEventListener('focus', function(){
+  var el = this;
+  setTimeout(function(){
+    el.scrollIntoView({ behavior:'smooth', block:'center' });
+  }, 350); /* attende l'animazione della tastiera */
+});
+
+function loadCustomUrl() {
+  var url = (document.getElementById('customUrlInput').value || '').trim();
+  if (!url) return;
+  if (!/^https?:\/\//i.test(url)) {
+    document.getElementById('customUrlInput').style.borderColor = 'rgba(176,122,138,.6)';
+    setTimeout(function(){ document.getElementById('customUrlInput').style.borderColor=''; }, 1500);
+    return;
+  }
+  /* Mostra stato caricamento */
+  var btn = document.getElementById('customUrlBtn');
+  btn.textContent = '…'; btn.disabled = true;
+  /* Scarica il file come blob per salvarlo in IDB */
+  fetch(url)
+    .then(function(r){
+      if (!r.ok) throw new Error('HTTP '+r.status);
+      return r.blob();
+    })
+    .then(function(blob){
+      /* Estrai nome dal URL */
+      var parts = url.split('/');
+      var name  = decodeURIComponent(parts[parts.length-1].split('?')[0]) || 'traccia.mp3';
+      idbSave(name, blob, function(ok){
+        btn.textContent='Carica'; btn.disabled=false;
+        if (ok) {
+          applyBlob(blob, name);
+          document.getElementById('customUrlInput').value='';
+        } else {
+          dlog('Errore salvataggio URL blob','error');
+        }
+      });
+    })
+    .catch(function(e){
+      btn.textContent='Carica'; btn.disabled=false;
+      dlog('Errore fetch URL: '+e.message,'error');
+      document.getElementById('customUrlInput').style.borderColor='rgba(176,122,138,.6)';
+      setTimeout(function(){ document.getElementById('customUrlInput').style.borderColor=''; },2000);
+    });
+}
+
+function loadCustomFile(file) {
+  destroyCustomAudio();
+  /* Mostra stato salvataggio nel pulsante */
+  var lbl = document.querySelector('.ct-pick-main');
+  if (lbl) lbl.textContent = 'Salvataggio…';
+  idbSave(file.name, file, function(ok) {
+    if (lbl) lbl.textContent = 'Scegli dal dispositivo';
+    if (ok) {
+      applyBlob(file, file.name);
+    } else {
+      dlog('Errore salvataggio file','error');
+    }
+  });
+}
+
+function buildPreviewPlayer(src) {
+  if (customAudio) { customAudio.pause(); customAudio.src=''; }
+  customAudio = new Audio(src);
+  customAudio.loop = true; customAudio.preload='metadata';
+  customAudio.addEventListener('timeupdate', onCustomProgress);
+  customAudio.addEventListener('loadedmetadata', onCustomProgress);
+}
+
+function onCustomProgress() {
+  if (!customAudio) return;
+  var pct = customAudio.duration ? (customAudio.currentTime/customAudio.duration)*100 : 0;
+  var s   = Math.floor(customAudio.currentTime);
+  var el  = document.getElementById('customProgress');
+  var tm  = document.getElementById('customTime');
+  if (el) el.style.width = pct+'%';
+  if (tm) tm.textContent = Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
+}
+
+document.getElementById('customPlayBtn').addEventListener('click', function(){
+  if (!customAudio) return;
+  if (customAudio.paused) {
+    customAudio.play();
+    this.textContent='⏸'; this.classList.add('playing');
+  } else {
+    customAudio.pause();
+    this.textContent='▶'; this.classList.remove('playing');
+  }
+});
+
+document.getElementById('customRemove').addEventListener('click', function(){
+  destroyCustomAudio();
+  if (customObjectURL){ URL.revokeObjectURL(customObjectURL); customObjectURL=null; }
+  customLoaded=false; customOpts.fileName=null;
+  idbDelete();
+  showCtEmpty();
+  dlog('Traccia personale rimossa');
+});
+
+function destroyCustomAudio() {
+  if (customAudio) {
+    customAudio.pause();
+    customAudio.removeEventListener('timeupdate', onCustomProgress);
+    customAudio.removeEventListener('loadedmetadata', onCustomProgress);
+    customAudio.src=''; customAudio=null;
+  }
+  if (customMediaNode){ try{customMediaNode.disconnect();}catch(e){} customMediaNode=null; }
+}
+
+/* ── Sessione: avvia traccia personale ── */
+function startCustomAudioSession(onReady) {
+  if (!customLoaded||!customObjectURL){ dlog('Nessun file caricato','warn'); return false; }
+  if (!AC){ dlog('AC non pronto','error'); return false; }
+  resumeAC();
+  if (customAudio&&!customAudio.paused){
+    customAudio.pause();
+    var pb=document.getElementById('customPlayBtn');
+    if(pb){pb.textContent='▶';pb.classList.remove('playing');}
+  }
+  destroyCustomAudio();
+  var sa=new Audio(customObjectURL);
+  sa.loop=true; customAudio=sa;
+  customMediaNode=AC.createMediaElementSource(sa);
+  customMediaNode.connect(masterGain);
+  sa.volume=0;
+  sa.play().then(function(){
+    var steps=20,step=0,vol=Math.min(cfg.vol,1);
+    var fi=setInterval(function(){
+      step++; sa.volume=Math.min((step/steps)*vol,1);
+      if(step>=steps)clearInterval(fi);
+    },100);
+    dlog('Traccia personale avviata: '+customOpts.fileName,'ok');
+    if(onReady)onReady('♫ '+customOpts.fileName+' · in riproduzione');
+  }).catch(function(e){dlog('Play error: '+e.message,'error');});
+  return true;
+}
+
+function stopCustomAudioSession() {
+  if (!customAudio) return;
+  var audio=customAudio, steps=10, step=0, sv=audio.volume;
+  var fi=setInterval(function(){
+    step++; audio.volume=Math.max(sv*(1-step/steps),0);
+    if(step>=steps){
+      clearInterval(fi); audio.pause(); audio.currentTime=0;
+      if(customMediaNode){try{customMediaNode.disconnect();}catch(e){} customMediaNode=null;}
+      if(customObjectURL)buildPreviewPlayer(customObjectURL);
+    }
+  },80);
+}
+
+/* ── Integrazione openSettings ── */
+var _origOpen=openSettings;
+openSettings=function(){
+  swSet('swCustomTrack',customOpts.enabled);
+  updateCustomTrackUI();
+  _origOpen();
+};
+
+/* ══════════════════════════════════════════════
+   PERSISTENZA IMPOSTAZIONI (localStorage)
+══════════════════════════════════════════════ */
+function saveAllSettings() {
+  try {
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify({
+      headphones:    audioOpts.headphones,
+      limiter:       audioOpts.limiter,
+      customEnabled: customOpts.enabled
+    }));
+  } catch(e){}
+}
+
+function loadAllSettings() {
+  try {
+    var raw = localStorage.getItem(SETTINGS_KEY);
+    if (!raw) return;
+    var s = JSON.parse(raw);
+    if (typeof s.headphones    === 'boolean') audioOpts.headphones = s.headphones;
+    if (typeof s.limiter       === 'boolean') audioOpts.limiter    = s.limiter;
+    if (typeof s.customEnabled === 'boolean') customOpts.enabled   = s.customEnabled;
+  } catch(e){}
+}
+
+/* ── Init: carica impostazioni poi ripristina file da IDB ── */
+loadAllSettings();
+idbRestoreOnStartup();
+
 </script>
 
 </body>
