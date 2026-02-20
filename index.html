@@ -86,7 +86,7 @@ body::before {
 .app-title-wrap { display:flex; flex-direction:column; gap:3px; }
 .app-title { font-size:clamp(40px,10.5vw,54px); font-weight:300; letter-spacing:.14em; line-height:1; }
 .app-sub { font-family:'DM Mono','Courier New',monospace; font-family:var(--fm); font-size:8.5px; letter-spacing:.32em; color:rgba(240,235,226,0.40); color:var(--muted); text-transform:uppercase; }
-.app-credit { font-family:'DM Mono','Courier New',monospace; font-family:var(--fm); font-size:8.5px; letter-spacing:.22em; color:rgba(200,162,1066,0.18); color:var(--muted2); text-transform:lowercase; margin-top:2px; }
+.app-credit { font-family:'DM Mono','Courier New',monospace; font-family:var(--fm); font-size:8.5px; letter-spacing:.22em; color:#f0ebe2; color:var(--text); text-transform:lowercase; margin-top:2px; }
 .start-btn-header {
   flex-shrink:0; padding:16px 22px; border:none; border-radius:14px;
   font-family:'Cormorant Garamond',Georgia,serif; font-family:var(--fd);
@@ -451,7 +451,21 @@ input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:18px; h
   </div>
 
   <div class="sec" style="padding-top:16px;padding-bottom:0">
-    <button class="save-btn" id="saveBtn"><span class="save-icon">↓</span> Salva impostazioni</button>
+    <div style="display:flex;gap:8px;align-items:stretch;">
+      <button class="save-btn" id="saveBtn" style="flex:1;"><span class="save-icon">↓</span> Salva impostazioni</button>
+      <select id="themeSelect" style="
+        flex-shrink:0;padding:0 10px;border-radius:12px;
+        border:1px solid rgba(200,162,106,.22);
+        background:rgba(200,162,106,.05);
+        color:var(--amber);font-family:var(--fm);
+        font-size:9px;letter-spacing:.18em;
+        cursor:pointer;-webkit-appearance:none;appearance:none;
+        outline:none;min-width:110px;text-align:center;transition:all .2s;
+      ">
+        <option value="dark">◑ Scuro</option>
+        <option value="light">◐ Chiaro</option>
+      </select>
+    </div>
   </div>
 
   <!-- 01 — Pattern -->
@@ -1289,6 +1303,7 @@ function applyTheme(theme){
   qsa('.screen').forEach(function(s){s.style.backgroundColor=theme==='light'?'#f5f0e8':'#080705';});
   setPanelColors(theme);
   var swTh=qs('swTheme'); if(swTh){swTh.classList.toggle('on',theme==='light');swTh.setAttribute('aria-checked',theme==='light'?'true':'false');}
+  var tSel=qs('themeSelect'); if(tSel) tSel.value=theme;
   var dt=qs('debugToggle'); if(dt)dt.style.backgroundColor=theme==='light'?'#f5f0e8':'#080705';
   try{localStorage.setItem(THEME_KEY,theme);}catch(e){}
 }
@@ -1318,6 +1333,20 @@ function closeSettings(){closePanel('settingsPanel');}
 qs('gearBtn').addEventListener('click',openSettings);
 qs('gearBtnSession').addEventListener('click',openSettings);
 qs('settingsClose').addEventListener('click',closeSettings);
+
+/* ── Theme select combo (header) ── */
+(function(){
+  var sel = qs('themeSelect');
+  if(!sel) return;
+  /* sync initial value after theme is applied */
+  sel.value = currentTheme;
+  sel.addEventListener('change', function(){
+    applyTheme(this.value);
+    /* keep settings panel toggle in sync */
+    var swTh = qs('swTheme');
+    if(swTh){ swTh.classList.toggle('on', this.value==='light'); swTh.setAttribute('aria-checked', this.value==='light'?'true':'false'); }
+  });
+})();
 
 /* ══ TRACCIA PERSONALE — IndexedDB ══ */
 var customObjectURL=null,customAudio=null,customMediaNode=null,customLoaded=false;
