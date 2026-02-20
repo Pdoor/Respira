@@ -956,8 +956,6 @@ function closePanel(id) { var el=qs(id); if(el)el.classList.add('hidden'); }
 /* ══ WEB AUDIO ENGINE ══ */
 var AC=null,masterGain=null,activeNodes=[],synthActive=false,synthTimers=[];
 var masterHPF=null,masterComp=null;
-/* MP3 track nodes */
-var mp3Audio=null, mp3MediaNode=null;
 /* Binaural nodes */
 var binauralNodes=null;
 
@@ -1037,34 +1035,85 @@ function startTemple(){
   synthTimers.push(setTimeout(bell,600)); synthTimers.push(setTimeout(bell,5000+Math.random()*3000));
 }
 
-/* ── MP3 track engine ── */
+/* ── MP3 gapless engine (AudioBuffer loop — zero-gap, sample-accurate) ── */
+/* Cache decoded buffers so repeat plays skip the fetch/decode step */
+var mp3BufferCache = {};
+var mp3SourceNode  = null;   /* current AudioBufferSourceNode */
+var mp3GainNode    = null;   /* per-track gain for fade-in/out */
+
 function stopMP3(){
-  if(!mp3Audio)return;
-  try{mp3Audio.pause(); mp3Audio.src='';}catch(e){}
-  if(mp3MediaNode){try{mp3MediaNode.disconnect();}catch(e){}mp3MediaNode=null;}
-  mp3Audio=null; dlog('MP3 fermato');
+  if(!mp3SourceNode) return;
+  var src = mp3SourceNode, gn = mp3GainNode;
+  mp3SourceNode = null; mp3GainNode = null;
+  /* Soft fade-out then stop */
+  if(AC && gn){
+    gn.gain.setTargetAtTime(0, AC.currentTime, 0.3);
+  }
+  setTimeout(function(){
+    try{ src.stop(); }catch(e){}
+    try{ src.disconnect(); }catch(e){}
+    if(gn) try{ gn.disconnect(); }catch(e){}
+    dlog('MP3 fermato');
+  }, 1000);
 }
+
 function startMP3(url, onReady){
   stopMP3();
-  if(!AC){dlog('AC non pronto per MP3','error');return;}
+  if(!AC){ dlog('AC non pronto per MP3','error'); return; }
   resumeAC();
-  var audio = new Audio(url);
-  audio.loop = true;
-  audio.preload = 'auto';
-  var mediaNode = AC.createMediaElementSource(audio);
-  mediaNode.connect(masterGain);
-  mp3Audio = audio;
-  mp3MediaNode = mediaNode;
-  /* Fade in */
-  masterGain.gain.setValueAtTime(0, AC.currentTime);
-  masterGain.gain.linearRampToValueAtTime(cfg.vol, AC.currentTime + 2.5);
-  audio.play().then(function(){
-    dlog('MP3 avviato: '+url,'ok');
+
+  function _play(audioBuffer){
+    if(!AC) return;
+    /* Create a dedicated gain node for this track (fade-in) */
+    var gn = AC.createGain();
+    gn.gain.setValueAtTime(0, AC.currentTime);
+    gn.gain.linearRampToValueAtTime(cfg.vol, AC.currentTime + 2.5);
+    gn.connect(masterGain);
+
+    var src = AC.createBufferSource();
+    src.buffer = audioBuffer;
+    src.loop   = true;
+    /* loopStart/loopEnd = 0 & duration → Web Audio loops the exact sample
+       range with zero gap. No ID3 tags, no decoder padding issues. */
+    src.loopStart = 0;
+    src.loopEnd   = audioBuffer.duration;
+    src.connect(gn);
+    src.start(0);
+
+    mp3SourceNode = src;
+    mp3GainNode   = gn;
+
+    dlog('MP3 gapless avviato: '+url+' ('+audioBuffer.duration.toFixed(2)+'s)','ok');
     if(onReady) onReady('◈ '+TRACKS[cfg.track].name+' · 432 Hz · in ascolto');
-  }).catch(function(e){
-    dlog('MP3 play err: '+e.message,'error');
-    if(onReady) onReady('⚠ Errore caricamento traccia');
-  });
+  }
+
+  /* Use cached buffer if available */
+  if(mp3BufferCache[url]){
+    dlog('MP3 buffer cached, avvio immediato');
+    _play(mp3BufferCache[url]);
+    return;
+  }
+
+  /* Fetch + decode → cache → play */
+  dlog('MP3 fetch: '+url);
+  if(onReady) onReady('⏳ Caricamento traccia 432 Hz…');
+
+  fetch(url)
+    .then(function(r){
+      if(!r.ok) throw new Error('HTTP '+r.status);
+      return r.arrayBuffer();
+    })
+    .then(function(ab){
+      return AC.decodeAudioData(ab);
+    })
+    .then(function(audioBuffer){
+      mp3BufferCache[url] = audioBuffer;   /* cache for instant replay */
+      _play(audioBuffer);
+    })
+    .catch(function(e){
+      dlog('MP3 load err: '+e.message,'error');
+      if(onReady) onReady('⚠ Errore caricamento traccia');
+    });
 }
 
 /* ── Binaural beat engine (stereo, Safari-safe) ── */
@@ -1169,7 +1218,6 @@ document.addEventListener('visibilitychange',function(){
     if(AC&&AC.state==='suspended') AC.resume().then(function(){dlog('AC resumed');});
     if(sess.timer){
       if(customOpts.enabled&&customLoaded){ if(customAudio&&customAudio.paused){customAudio.play().catch(function(){});dlog('Traccia ripresa');} }
-      else if(mp3Audio&&mp3Audio.paused){ mp3Audio.play().catch(function(){});dlog('MP3 ripresa'); }
       else if(!synthActive){ dlog('Riavvio sintesi','ok'); startSynth(cfg.track,function(msg){var tt=qs('tickerText');if(tt)tt.textContent=msg;}); }
     }
   }
